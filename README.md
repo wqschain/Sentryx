@@ -6,7 +6,7 @@ A powerful cryptocurrency analysis platform that combines real-time price tracki
 
 ## Features
 
-- Real-time cryptocurrency price tracking for BTC, ETH, and SOL
+- Real-time cryptocurrency price tracking for BTC, ETH, SOL, XRP, DOGE
 - Advanced sentiment analysis using our custom fine-tuned CryptoBERT model
 - Beautiful and modern UI built with React and TailwindCSS
 - High-performance FastAPI backend with async support
