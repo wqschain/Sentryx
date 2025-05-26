@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
     
     # Database
-    SQLITE_URL: str = "sqlite:///./sentryx.db"
+    SQLITE_URL: str = "sqlite:///./sentryx.db"  # Using file-based database
     
     # CORS
     BACKEND_CORS_ORIGINS: List[str] = [
@@ -24,12 +24,12 @@ class Settings(BaseSettings):
     ]
     
     # Supported tokens
-    SUPPORTED_TOKENS: List[str] = ["BTC", "ETH", "SOL"]
+    SUPPORTED_TOKENS: List[str] = ["BTC", "ETH", "SOL", "XRP", "DOGE"]
     
     # Model Configuration
     MODEL_BASE_PATH: str = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "models")
-    SENTIMENT_MODEL_PATH: str = os.path.join(MODEL_BASE_PATH, "crypto_sentiment")
-    MODEL_VERSION: str = "cryptobert-v2"
+    SENTIMENT_MODEL_PATH: str = os.path.join(MODEL_BASE_PATH, "SentryxAI")
+    MODEL_VERSION: str = "SentryxAI-v1"
     
     # Sentiment Label Mapping
     SENTIMENT_LABEL_MAP: Dict[str, str] = {
@@ -40,13 +40,15 @@ class Settings(BaseSettings):
     
     # CoinGecko API
     COINGECKO_API_KEY: str = ""
-    COINGECKO_API_URL: str = "https://api.coingecko.com/api/v3"
+    COINGECKO_API_URL: str = "https://api.coingecko.com/api/v3"  # Base URL, will be modified in service if API key exists
     COINGECKO_RATE_LIMIT: int = 50
     COINGECKO_MONTHLY_LIMIT: int = 10000
     COINGECKO_MAPPING: Dict[str, str] = {
-        "btc": "bitcoin",
-        "eth": "ethereum",
-        "sol": "solana"
+        "BTC": "bitcoin",
+        "ETH": "ethereum",
+        "SOL": "solana",
+        "XRP": "ripple",
+        "DOGE": "dogecoin"
     }
     
     # Update intervals
@@ -54,7 +56,6 @@ class Settings(BaseSettings):
     SCRAPING_INTERVAL_HOURS: int = 6  # News scraping interval
 
     class Config:
-        case_sensitive = True
         env_file = ".env"
 
 settings = Settings() 

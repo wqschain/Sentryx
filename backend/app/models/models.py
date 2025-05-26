@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, JSON
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, JSON, Index
 from sqlalchemy.sql import func
 from datetime import datetime
 from .base import Base
@@ -35,12 +35,47 @@ class SentimentHistory(Base):
 class TokenData(Base):
     __tablename__ = "token_data"
     
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     symbol = Column(String, unique=True, index=True)
     price = Column(Float)
+    price_change_24h = Column(Float, default=0)
     market_cap = Column(Float)
     volume = Column(Float)
+    high_24h = Column(Float)
+    low_24h = Column(Float)
+    circulating_supply = Column(Float)
+    max_supply = Column(Float, nullable=True)
+    market_rank = Column(Integer)
+    ath = Column(Float)
     last_updated = Column(DateTime(timezone=True))
+
+    __table_args__ = (
+        Index('idx_token_symbol', 'symbol', unique=True),
+    )
+
+class TokenPriceHistory(Base):
+    __tablename__ = "token_price_history"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    token_symbol = Column(String, index=True)
+    price = Column(Float)
+    timestamp = Column(DateTime(timezone=True))
+
+    __table_args__ = (
+        Index('idx_token_timestamp', 'token_symbol', 'timestamp'),
+    )
+
+class TokenVolumeHistory(Base):
+    __tablename__ = "token_volume_history"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    token_symbol = Column(String, index=True)
+    volume = Column(Float)
+    timestamp = Column(DateTime(timezone=True))
+
+    __table_args__ = (
+        Index('idx_token_volume_timestamp', 'token_symbol', 'timestamp'),
+    )
 
 class APIUsage(Base):
     __tablename__ = "api_usage"

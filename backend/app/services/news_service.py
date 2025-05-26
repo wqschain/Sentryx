@@ -5,7 +5,7 @@ from app.models.models import Article
 from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime
 import logging
-from app.token.service import analyze_sentiment
+from app.services.sentiment import analyze_sentiment
 from playwright.async_api import async_playwright
 
 logging.basicConfig(level=logging.INFO)
@@ -90,7 +90,7 @@ async def update_news_and_sentiment(db: AsyncSession):
                 if result.scalar_one_or_none():
                     continue
                 
-                sentiment, score = await analyze_sentiment(article_data['content'])
+                sentiment, score = await analyze_sentiment(article_data['content'], db=db)
                 
                 # Create and store article in database
                 article = Article(

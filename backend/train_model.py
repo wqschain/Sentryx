@@ -1,4 +1,4 @@
-from app.token.model_training import train_model
+from app.services.sentiment.model_training import train_model
 import logging
 
 logging.basicConfig(

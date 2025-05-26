@@ -16,6 +16,8 @@ export const getTokens = () => api.get('/token');
 export const getToken = (symbol: string) => api.get(`/token/${symbol}`);
 export const getTokenArticles = (symbol: string) => api.get(`/token/${symbol}/articles`);
 export const getTokenSentiment = (symbol: string) => api.get(`/token/${symbol}/sentiment`);
+export const getTokenPriceHistory = (symbol: string) => api.get(`/token/${symbol}/price-history`);
+export const getTokenVolumeHistory = (symbol: string) => api.get(`/token/${symbol}/volume-history`);
 
 // Sentiment analysis endpoint
 export const analyzeSentiment = (text: string) =>

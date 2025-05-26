@@ -1,10 +1,14 @@
 import aiohttp
 from app.core.config import settings
-from app.models.models import TokenData
+from app.models.models import TokenData, TokenPriceHistory, TokenVolumeHistory
 from datetime import datetime
 import logging
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from .coingecko_service import coingecko_service
+import asyncio
+
+logger = logging.getLogger(__name__)
 
 # CoinGecko ID mapping for our supported tokens
 COINGECKO_IDS = {
@@ -17,64 +21,56 @@ COINGECKO_IDS = {
 
 async def fetch_token_data() -> dict:
     """Fetch current price data for all supported tokens from CoinGecko"""
-    ids = ','.join(COINGECKO_IDS.values())
-    url = f"{settings.COINGECKO_API_URL}/simple/price"
-    params = {
-        "ids": ids,
-        "vs_currencies": "usd",
-        "include_market_cap": "true",
-        "include_24hr_vol": "true",
-        "include_24hr_change": "true"
-    }
-    
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params) as response:
-                if response.status == 200:
-                    return await response.json()
-                else:
-                    logging.error(f"CoinGecko API error: {response.status}")
-                    return {}
+        data = {}
+        for symbol in coingecko_service.token_id_map.keys():
+            token_data = await coingecko_service.get_token_data(symbol)
+            if token_data:
+                data[symbol.upper()] = token_data
+            await asyncio.sleep(1)  # Rate limiting
+        return data
     except Exception as e:
-        logging.error(f"Error fetching token data: {e}")
+        logger.error(f"Error fetching token data: {e}")
         return {}
 
 async def update_token_prices(db: AsyncSession):
     """Update price data for all supported tokens"""
     try:
-        price_data = await fetch_token_data()
-        
-        for symbol, coingecko_id in COINGECKO_IDS.items():
-            if coingecko_id in price_data:
-                data = price_data[coingecko_id]
-                
-                # Check if token exists
-                result = await db.execute(
-                    select(TokenData).where(TokenData.symbol == symbol)
-                )
-                token = result.scalar_one_or_none()
-                
-                if token:
-                    # Update existing token
-                    token.price = data.get('usd', 0.0)
-                    token.market_cap = data.get('usd_market_cap', 0.0)
-                    token.volume = data.get('usd_24h_vol', 0.0)
-                    token.last_updated = datetime.utcnow()
-                else:
-                    # Create new token
-                    token = TokenData(
-                        symbol=symbol,
-                        price=data.get('usd', 0.0),
-                        market_cap=data.get('usd_market_cap', 0.0),
-                        volume=data.get('usd_24h_vol', 0.0),
-                        last_updated=datetime.utcnow()
-                    )
-                    db.add(token)
-        
+        # Get current token data
+        for symbol in coingecko_service.token_id_map.keys():
+            token_data = await coingecko_service.get_token_data(symbol)
+            if not token_data:
+                continue
+
+            # Update or create token data
+            result = await db.execute(
+                select(TokenData).where(TokenData.symbol == symbol.upper())
+            )
+            token = result.scalar_one_or_none()
+
+            if token:
+                for key, value in token_data.items():
+                    setattr(token, key, value)
+            else:
+                token = TokenData(**token_data)
+                db.add(token)
+
+            # Get and store price history
+            price_history = await coingecko_service.get_price_history(symbol)
+            for price_data in price_history:
+                price_record = TokenPriceHistory(**price_data)
+                db.add(price_record)
+
+            # Get and store volume history
+            volume_history = await coingecko_service.get_volume_history(symbol)
+            for volume_data in volume_history:
+                volume_record = TokenVolumeHistory(**volume_data)
+                db.add(volume_record)
+
         # Commit all changes
         await db.commit()
-                
+
     except Exception as e:
-        logging.error(f"Error in update_token_prices: {e}")
+        logger.error(f"Error in update_token_prices: {e}")
         await db.rollback()
         raise 

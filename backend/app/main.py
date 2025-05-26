@@ -4,8 +4,10 @@ from app.core.config import settings
 from app.api.v1.api import api_router
 from app.core.scheduler import setup_scheduler
 from app.core.init_db import init_db
-from app.token.service import load_sentiment_model
+from app.services.sentiment.service import load_sentiment_model
 import logging
+import asyncio
+from app.core.tasks import start_background_tasks
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -44,6 +46,10 @@ async def startup_event():
         # Set up background tasks scheduler
         logger.info("Setting up background tasks...")
         setup_scheduler()
+        
+        # Start the background tasks in a separate task
+        asyncio.create_task(start_background_tasks())
+        logger.info("Started background tasks")
         
         logger.info("Application startup complete!")
     except Exception as e:

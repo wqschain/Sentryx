@@ -1,13 +1,84 @@
-# Sentryx (v2.1)
+# Sentryx (v2.2)
 
-> **Development Status**: This is a base version (v2.1) and is under constant development. Features and functionality are being actively added and improved. Please expect frequent updates and potential breaking changes.
+> **Development Status**: This is a base version (v2.2) and is under constant development. Features and functionality are being actively added and improved. Please expect frequent updates and potential breaking changes.
 
-A powerful cryptocurrency analysis platform that combines real-time price tracking with advanced sentiment analysis. The platform uses a fine-tuned CryptoBERT model to analyze market sentiment from various sources.
+A powerful cryptocurrency analysis platform that combines real-time price tracking with advanced sentiment analysis. The platform uses SentryxAI, our fine-tuned sentiment analysis model, to analyze market sentiment from various sources.
+
+## Version 2.2 Updates
+
+### New Features
+- Implemented text relevancy analysis:
+  - Pre-analysis filtering to determine if text is crypto-relevant
+  - Smart decision making to only analyze relevant content
+  - UI indicators showing relevancy scores
+  - Improved accuracy by filtering out non-crypto content
+- Enhanced token data display:
+  - More comprehensive market metrics
+  - Detailed historical data visualization
+  - Better data organization and presentation
+
+### UI Improvements
+- Reduced overall UI scaling by 30% for better space utilization
+- Optimized TokenPage, MarketStats, PriceChart, and VolumeChart components
+- Enhanced visual hierarchy with improved color contrast and typography
+- Added subtle animations for better user feedback
+- Improved component spacing and layout
+- Enriched color palette for better data visualization:
+  - Price increases: Vibrant green (#00C853)
+  - Price decreases: Warm red (#FF3D00)
+  - Volume bars: Rich blue (#2962FF)
+  - Chart backgrounds: Gradient overlays for depth
+- Enhanced navigation experience:
+  - Smoother transitions between pages
+  - Better hover states for interactive elements
+  - Improved scrolling behavior in data tables
+  - Consistent spacing and alignment across views
+- Added relevancy indicators and feedback
+
+### Data Model Optimization
+- Streamlined token data model by removing redundant fields (market dominance, ATL)
+- Enhanced database initialization process for better reliability
+- Improved case handling for token symbols to prevent duplicates
+- Added support for relevancy scoring and tracking
+
+### Backend Enhancements
+- Implemented text relevancy analysis system
+- Improved error handling in CoinGecko service integration
+- Enhanced transaction management in database operations
+- Added better rate limiting for external API calls
+- Optimized data processing pipelines
+
+### Code Quality
+- Implemented consistent case handling for token symbols
+- Enhanced error logging and monitoring
+- Improved startup sequence reliability
+- Better handling of database cleanup operations
+- Refactored for better code organization and maintainability
+- Added comprehensive error handling for API integrations
+
+### Known Issues
+- Initial Token Page Loading:
+  - Token pages may take several minutes to load after backend startup
+  - This is due to the initial data population and caching process
+  - BTC data typically loads faster than other tokens
+  - Subsequent loads are much faster once data is cached
+
+- Price/Volume Chart Updates:
+  - Chart updates can be inconsistent or spotty
+  - Updates may not reflect in real-time as expected
+  - This is related to rate limiting and data synchronization
+  - Working on optimizing the update frequency and reliability
+
+- Database Synchronization:
+  - Occasional timezone comparison issues between stored and new data
+  - Some database operations may fail due to unique constraint conflicts
+  - These issues typically resolve themselves after a few minutes
+  - Working on improving data consistency and error handling
 
 ## Features
 
-- Real-time cryptocurrency price tracking for BTC, ETH, and SOL
-- Advanced sentiment analysis using our custom fine-tuned CryptoBERT model
+- Real-time cryptocurrency price tracking for BTC, ETH, SOL, XRP, and DOGE
+- Advanced sentiment analysis using SentryxAI, our custom-tuned model
 - Beautiful and modern UI built with React and TailwindCSS
 - High-performance FastAPI backend with async support
 - Automated data collection and sentiment analysis
@@ -27,10 +98,28 @@ A powerful cryptocurrency analysis platform that combines real-time price tracki
 ### Backend
 - FastAPI (Python) with async support
 - SQLite database with SQLAlchemy ORM
-- Custom fine-tuned CryptoBERT model for sentiment analysis
+- SentryxAI: Our custom sentiment analysis model
 - APScheduler for automated tasks
 - Comprehensive API monitoring and rate limiting
 - Playwright for reliable web scraping
+
+## SentryxAI Model
+
+SentryxAI is our custom-tuned sentiment analysis model, specifically designed for cryptocurrency market analysis. It is built upon the foundation of CryptoBERT (created by ElKulako), which we've fine-tuned with extensive cryptocurrency-specific data and enhanced for better performance in crypto sentiment analysis.
+
+### Model Architecture
+- Base Model: CryptoBERT by ElKulako (https://huggingface.co/ElKulako/cryptobert)
+- Fine-tuning: Custom training on crypto-specific sentiment data
+- Improvements: Enhanced accuracy for crypto terminology and market sentiment
+
+### Key Features
+- Specialized in cryptocurrency market sentiment
+- Three-way classification (Positive/Neutral/Negative)
+- Optimized for real-time analysis
+- Continuous performance monitoring and updates
+
+### Credits
+Special thanks to ElKulako for creating and open-sourcing CryptoBERT, which serves as the foundation for SentryxAI. The original CryptoBERT model can be found at https://huggingface.co/ElKulako/cryptobert.
 
 ## Getting Started
 
@@ -115,7 +204,7 @@ The API documentation is available at `http://localhost:8000/docs` when the back
 ## Features in Detail
 
 ### Sentiment Analysis
-- Custom-trained CryptoBERT model for crypto-specific sentiment analysis
+- SentryxAI: Our custom-tuned model for crypto-specific sentiment analysis
 - Real-time sentiment scoring for any crypto-related text
 - Historical sentiment tracking and analysis
 - Performance metrics and model monitoring
@@ -151,9 +240,14 @@ This project uses CoinGecko's API for real-time cryptocurrency data. While the f
 
 MIT License
 
+## Contact
+
+For questions, support, or collaboration:
+- X (Twitter): [@wqschain](https://twitter.com/wqschain)
+
 ## Security & Environment Setup
 
-⚠️ **Important: API Keys and Sensitive Data**
+ **Important: API Keys and Sensitive Data**
 - The repository includes a `.env.example` file as a template
 - Never commit your actual `.env` files to the repository
 - The `.gitignore` file is configured to exclude `.env` files
@@ -171,7 +265,7 @@ MIT License
    # Backend (.env)
    DATABASE_URL=sqlite:///./app.db
    COINGECKO_API_KEY=your_api_key
-   MODEL_PATH=./models/crypto_sentiment
+   MODEL_PATH=./models/SentryxAI
    LOG_LEVEL=INFO
 
    # Frontend (.env)
@@ -183,7 +277,7 @@ MIT License
    - News API keys (if using news features)
    - Any other third-party service keys
 
-⚠️ **Security Best Practices**:
+ **Security Best Practices**:
 - Keep your `.env` files local and never share them
 - Use different API keys for development and production
 - Regularly rotate your API keys

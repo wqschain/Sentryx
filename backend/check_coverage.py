@@ -1,5 +1,5 @@
-from app.token.test_data import TEST_CASES
-from app.token.data_augmentation import get_balanced_dataset, augment_dataset
+from app.services.sentiment.test_data import TEST_CASES
+from app.services.sentiment.data_augmentation import get_balanced_dataset, augment_dataset
 from collections import Counter
 
 def print_separator():

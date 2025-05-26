@@ -9,11 +9,14 @@ from app.core.config import settings
 from app.core.database import AsyncSessionLocal
 from app.services.news_service import update_news_and_sentiment
 from app.services.price_service import update_token_prices
-from app.token.sentiment_monitor import monitor
+from app.services.sentiment.sentiment_monitor import SentimentMonitor
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Create monitor instance
+monitor = SentimentMonitor()
 
 class TaskScheduler:
     def __init__(self):
