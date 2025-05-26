@@ -78,7 +78,7 @@ A powerful cryptocurrency analysis platform that combines real-time price tracki
 ## Features
 
 - Real-time cryptocurrency price tracking for BTC, ETH, SOL, XRP, and DOGE
-- Advanced sentiment analysis using SentryxAI, our custom-tuned model
+- Advanced sentiment analysis using SentryxAI (based on CryptoBERT), our custom-tuned model
 - Beautiful and modern UI built with React and TailwindCSS
 - High-performance FastAPI backend with async support
 - Automated data collection and sentiment analysis
