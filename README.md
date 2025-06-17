@@ -277,6 +277,13 @@ For questions, support, or collaboration:
    - News API keys (if using news features)
    - Any other third-party service keys
 
+
+## Project Demo
+
+This is a quick demo of the project. Click below to watch it on YouTube:
+
+[![Watch the Demo](https://img.youtube.com/vi/7T2LF4kLZxg/hqdefault.jpg)](https://www.youtube.com/watch?v=7T2LF4kLZxg)
+
  **Security Best Practices**:
 - Keep your `.env` files local and never share them
 - Use different API keys for development and production
